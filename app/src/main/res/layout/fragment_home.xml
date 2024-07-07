@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+  android:layout_height="match_parent"
+  android:layout_width="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <EditText
+        android:id="@+id/url_dit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/shape_rounded_outline_border"
+        android:hint="@string/hint_url"
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/search_button"
+        app:layout_constraintEnd_toStartOf="@id/end_guideline"
+        app:layout_constraintStart_toEndOf="@+id/search_button"
+        app:layout_constraintTop_toTopOf="@+id/search_button" />
+
+      <Button
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/label_send"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@id/start_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <RadioGroup
+        android:id="@+id/method_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@id/end_guideline"
+        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintTop_toBottomOf="@id/search_button">
+
+        <RadioButton
+          android:id="@+id/get_radio"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:checked="true"
+          android:text="@string/label_get_method" />
+
+        <RadioButton
+          android:id="@+id/post_radio"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/label_post_method" />
+      </RadioGroup>
+
+      <TextView
+        android:id="@+id/header_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_headers"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintTop_toBottomOf="@id/method_radio_group" />
+
+      <ImageView
+        android:id="@+id/add_header_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/baseline_add_circle_outline_24"
+        app:layout_constraintBottom_toBottomOf="@id/header_text_view"
+        app:layout_constraintStart_toEndOf="@id/header_text_view"
+        app:layout_constraintTop_toTopOf="@id/header_text_view" />
+
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/header_recycle_view"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toStartOf="@id/end_guideline"
+        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintTop_toBottomOf="@id/header_text_view" />
+
+      <TextView
+        android:id="@+id/params_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_params"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintTop_toBottomOf="@id/header_recycle_view" />
+
+      <ImageView
+        android:id="@+id/add_params_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/baseline_add_circle_outline_24"
+        app:layout_constraintBottom_toBottomOf="@id/params_text_view"
+        app:layout_constraintStart_toEndOf="@id/params_text_view"
+        app:layout_constraintTop_toTopOf="@id/params_text_view" />
+
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/params_recycle_view"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toStartOf="@id/end_guideline"
+        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+      <TextView
+        android:id="@+id/raw_body_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_raw_body"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintTop_toBottomOf="@id/header_recycle_view" />
+
+
+      <EditText
+        android:id="@+id/raw_body_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_rounded_outline_border"
+        android:maxLines="5"
+        android:minLines="5"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/end_guideline"
+        app:layout_constraintStart_toStartOf="@id/start_guideline"
+        app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+
+      <RadioGroup
+        android:id="@+id/request_body_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@id/end_guideline"
+        app:layout_constraintTop_toBottomOf="@id/header_recycle_view">
+
+        <RadioButton
+          android:id="@+id/multi_part_radio"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:checked="true"
+          android:text="@string/label_multi_part" />
+
+        <RadioButton
+          android:id="@+id/raw_body_radio"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/label_raw_body" />
+      </RadioGroup>
+
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/start_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/end_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
+
+      <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="request_body_radio_group,params_recycle_view" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+  </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>
