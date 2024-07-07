@@ -1,4 +1,3 @@
 package com.amroid.fetcher.domain.entities
 
-class Response {
-}
+data class Response(val responseCode: Int, val headers: Map<String, List<String>>, val body: String,val request: Request)

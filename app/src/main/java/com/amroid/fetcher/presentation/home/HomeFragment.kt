@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.amroid.fetcher.R
 import com.amroid.fetcher.databinding.FragmentHomeBinding
+import com.amroid.fetcher.domain.entities.Request
+import com.amroid.fetcher.domain.entities.RequestType
 import com.amroid.fetcher.utils.FilePicker
 
 class HomeFragment : Fragment() {
@@ -22,17 +25,21 @@ class HomeFragment : Fragment() {
 
     })
   }
+  private val viewModel by lazy {
+    ViewModelProvider(this, HomeViewModel.Factory)[HomeViewModel::class.java]
+  }
   private val binding
     get() = _binding!!
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     filePickerLauncher = registerForActivityResult(FilePicker(requireContext())) { uris ->
-      if (uris.isNotEmpty()){
+      if (uris.isNotEmpty()) {
         requestParamAdapter.addFileValue(uris[0])
       }
     }
   }
+
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
   ): View? {
@@ -93,11 +100,28 @@ class HomeFragment : Fragment() {
       headerAdapter.addEmptyTextParam()
     }
     binding.addParamsButton.setOnClickListener {
-      if (binding.getRadio.isChecked){
+      if (binding.getRadio.isChecked) {
         requestParamAdapter.addEmptyTextParam()
-      }else{
-      requestParamAdapter.addEmptyFileParam()
+      } else {
+        requestParamAdapter.addEmptyFileParam()
+      }
     }
+
+
+    binding.searchButton.setOnClickListener {
+
+
+      val request = Request(
+        url = binding.urlEdit.toString(),
+        requestType = if (binding.getRadio.isChecked) RequestType.GET else RequestType.POST,
+        headers = if (binding.getRadio.isChecked) headerAdapter.getParamList() else emptyList(),
+        rawBody = if (binding.rawBodyRadio.isChecked) binding.rawBodyEdit.toString() else "",
+        formData = if (binding.multiPartRadio.isChecked) requestParamAdapter.getParamList() else emptyList()
+
+      )
+      viewModel.sendRequest(request)
+
+
     }
 
   }

@@ -8,6 +8,7 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContract
 import java.io.File
+import java.io.FileOutputStream
 
 class FilePicker(
   private val context: Context
@@ -18,10 +19,8 @@ class FilePicker(
       addCategory(Intent.CATEGORY_OPENABLE)
       type = input
       putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-      putExtra(
-        Intent.EXTRA_ALLOW_MULTIPLE,
-        false
-      ).addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+      putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
   }
@@ -49,16 +48,16 @@ class FilePicker(
         for (i in 0 until clipData.itemCount) {
           val uri = clipData.getItemAt(i).uri
           if (uri != null) {
-            val fileUri = getUri(uri, context)
-            resultSet.add(fileUri.toString())
+            val filePath = uriToFile(uri, context)?.path ?: continue
+            resultSet.add(filePath)
           }
         }
       }
       return ArrayList(resultSet)
     }
 
-    private fun getUri(uri: Uri, context: Context): Uri {
-      var resultURI = uri
+    private fun uriToFile(uri: Uri, context: Context): File? {
+      var resultFile: File? = null
       if (ContentResolver.SCHEME_CONTENT == uri.scheme) {
         val cr: ContentResolver = context.contentResolver
         val mimeTypeMap = MimeTypeMap.getSingleton()
@@ -67,14 +66,16 @@ class FilePicker(
           "temp${System.currentTimeMillis()}", ".$extensionFile", context.cacheDir
         )
         val input = cr.openInputStream(uri)
-        file.outputStream().use { stream ->
-          input?.copyTo(stream)
+        val output = FileOutputStream(file)
+        input?.use { input ->
+          output.use { output ->
+            input.copyTo(output)
+          }
         }
         input?.close()
-        resultURI = Uri.fromFile(file)
+        resultFile = file
       }
-      return resultURI
+      return resultFile
     }
   }
-
 }

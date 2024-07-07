@@ -10,4 +10,5 @@
   <string name="label_multi_part">MultiPart</string>
   <string name="hint_key">Key</string>
   <string name="hint_value">Value</string>
+  <string name="label_file">File </string>
 </resources>

@@ -2,6 +2,7 @@ package com.amroid.fetcher.utils
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import android.widget.EditText
 
 fun EditText.watchText(afterChanged: (text: String?) -> Unit) {
@@ -12,4 +13,7 @@ fun EditText.watchText(afterChanged: (text: String?) -> Unit) {
       afterChanged(editable.toString())
     }
   })
+}
+fun String.isValidUrl(): Boolean {
+  return this.isNotEmpty() && Patterns.WEB_URL.matcher(this).matches()
 }

@@ -2,6 +2,7 @@ package com.amroid.fetcher.presentation.home
 
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -45,7 +46,9 @@ class ParamAdapter(
     notifyDataSetChanged()
   }
 
-  fun getParamList() = data.toList()
+  fun getParamList() = data.filter {
+    it.key.isNotEmpty() && (it.value.isNotEmpty() || (it.isFile && it.fileUri.isNotEmpty()))
+  }
 
   override fun getItemViewType(position: Int): Int {
     return data[position].type.ordinal
@@ -96,6 +99,14 @@ class ParamAdapter(
     fun bindData(param: Param, onChooseFile: () -> Unit) {
       binding.keyEdit.setText(param.key)
       binding.valueEdit.setText(param.fileUri)
+      binding.fileToggle.isChecked = param.isFile
+      if (param.isFile) {
+        binding.addFileButton.visibility = View.VISIBLE
+        binding.valueEdit.isEnabled = false
+      } else {
+        binding.addFileButton.visibility = View.GONE
+        binding.valueEdit.isEnabled = true
+      }
       binding.keyEdit.watchText {
         param.key = it.toString()
       }
@@ -106,6 +117,10 @@ class ParamAdapter(
       binding.addFileButton.setOnClickListener {
         selectedPosition = adapterPosition
         onChooseFile()
+      }
+      binding.fileToggle.setOnClickListener {
+        param.isFile = binding.fileToggle.isChecked
+        notifyItemChanged(adapterPosition)
       }
 
     }
