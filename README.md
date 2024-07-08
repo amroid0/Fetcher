@@ -10,6 +10,7 @@ This is a simple Android application designed for testing backend APIs. It allow
 - Cache requests with SQLite
 - Filter cached requests by method type or time elapsed or response status 
 
+
 ## Tech Stack
 
 - **Manual Dependency Injection:** Managing dependencies manually without using frameworks like Dagger or Hilt.
@@ -18,6 +19,11 @@ This is a simple Android application designed for testing backend APIs. It allow
 - **HttpURLConnection:** Handling networking operations.
 - **SQLite:** Caching requests locally.
 - **ExecutorService:** Managing threading and background tasks.
+
+## Clean Architecture
+
+The app follows Clean Architecture principles, with a clear separation between the Data, Domain, and Presentation layers.
+
 
 ## APK Download
 [APK Link](https://drive.google.com/file/d/1ElBdRuBi5T61fZwDITGptqTD0XZjttIm/view?usp=drive_link)
