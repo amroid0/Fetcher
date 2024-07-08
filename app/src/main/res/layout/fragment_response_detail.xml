@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:orientation="vertical"
+  android:padding="16dp">
+
+  <TextView
+    android:id="@+id/url_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="URL"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:paddingBottom="8dp"/>
+
+  <TextView
+    android:id="@+id/headers_title_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Response Headers"
+    android:textSize="14sp"
+    android:textStyle="bold"
+    android:paddingTop="8dp"
+    android:paddingBottom="4dp"/>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/headers_recycle"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@color/white"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    />
+
+  <TextView
+    android:id="@+id/response_code_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Response Code"
+    android:textSize="14sp"
+    android:textStyle="bold"
+    android:paddingTop="8dp"
+    android:paddingBottom="4dp"/>
+
+  <!-- Response Body -->
+  <TextView
+    android:id="@+id/body_title_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Response Body"
+    android:textSize="14sp"
+    android:textStyle="bold"
+    android:paddingTop="8dp"
+    android:paddingBottom="4dp"/>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:background="@android:color/white"
+    android:padding="8dp">
+
+    <TextView
+      android:id="@+id/body_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Response Body Content"
+      android:textSize="14sp"/>
+  </ScrollView>
+
+</LinearLayout>

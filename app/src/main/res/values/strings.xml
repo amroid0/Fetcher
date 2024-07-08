@@ -1,3 +1,17 @@
 <resources>
   <string name="app_name">Fetcher</string>
+  <string name="label_send">Send</string>
+  <string name="hint_url">Enter url</string>
+  <string name="label_get_method">GET</string>
+  <string name="label_post_method">POST</string>
+  <string name="label_headers">Headers</string>
+  <string name="label_params">Params</string>
+  <string name="label_raw_body">Raw Body</string>
+  <string name="label_multi_part">MultiPart</string>
+  <string name="hint_key">Key</string>
+  <string name="hint_value">Value</string>
+  <string name="label_file">File </string>
+  <string name="response_status">Response Status</string>
+  <string name="request_type">Request Type</string>
+  <string name="time">Time</string>
 </resources>

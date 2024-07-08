@@ -5,7 +5,7 @@ plugins {
 
 android {
   namespace = "com.amroid.fetcher"
-  compileSdk = 33
+  compileSdk = 34
 
   defaultConfig {
     applicationId = "com.amroid.fetcher"
@@ -29,6 +29,9 @@ android {
   }
   kotlinOptions {
     jvmTarget = "1.8"
+  }
+  viewBinding {
+    enable = true
   }
 }
 
