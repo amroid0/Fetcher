@@ -59,17 +59,16 @@ class HomeFragment : Fragment(), FilePicker.FilePickerListener {
 
   private fun setupLisenters() {
     viewModel.getHomeState().observe(viewLifecycleOwner) {
+      binding.progress.root.visibility =  View.GONE
       when(it){
         HomeState.Loading -> {
-          Toast.makeText(context, "loading", Toast.LENGTH_SHORT).show()
-
+          binding.progress.root.visibility =  View.VISIBLE
         }
         is HomeState.OnError -> {
-          Toast.makeText(context, "failed", Toast.LENGTH_SHORT).show()
+          Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
 
         }
         is HomeState.Success -> {
-          Toast.makeText(context, "sucessss", Toast.LENGTH_SHORT).show()
           sharedViewModel.naviagteToDetail(it.response)
         }
     }
