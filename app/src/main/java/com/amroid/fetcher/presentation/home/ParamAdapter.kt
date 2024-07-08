@@ -1,6 +1,5 @@
 package com.amroid.fetcher.presentation.home
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +12,10 @@ import com.amroid.fetcher.domain.entities.ParamType
 import com.amroid.fetcher.utils.watchText
 
 class ParamAdapter(
-  private val data: MutableList<Param> = mutableListOf<Param>(),
+  private val data: MutableList<Param> = mutableListOf(),
   private val onChooseFile: () -> Unit = {}
 ) : RecyclerView.Adapter<ViewHolder>() {
-  var selectedPosition = -1
+  private var selectedFilePosition = -1
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val inflater = LayoutInflater.from(parent.context)
 
@@ -72,8 +71,8 @@ class ParamAdapter(
   }
 
   fun addFileValue(uri: String) {
-    data[selectedPosition].fileUri = uri
-    notifyItemChanged(selectedPosition)
+    data[selectedFilePosition].fileUri = uri
+    notifyItemChanged(selectedFilePosition)
   }
 
   inner class TextParamViewHolder(private val binding: TextParamListRowItemBinding) :
@@ -115,7 +114,7 @@ class ParamAdapter(
         notifyItemRemoved(adapterPosition)
       }
       binding.addFileButton.setOnClickListener {
-        selectedPosition = adapterPosition
+        selectedFilePosition = adapterPosition
         onChooseFile()
       }
       binding.fileToggle.setOnClickListener {

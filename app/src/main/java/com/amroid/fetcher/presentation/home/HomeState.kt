@@ -7,5 +7,4 @@ sealed class HomeState {
   data class Success(val response: Response) : HomeState()
   data class OnError(val message: String) : HomeState()
 
-
 }

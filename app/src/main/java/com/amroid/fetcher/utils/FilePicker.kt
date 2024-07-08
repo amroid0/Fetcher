@@ -1,81 +1,102 @@
 package com.amroid.fetcher.utils
-
 import android.app.Activity
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.webkit.MimeTypeMap
-import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.FragmentActivity
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
-class FilePicker(
-  private val context: Context
-) : ActivityResultContract<String, List<@JvmSuppressWildcards String>>() {
+class FilePicker(private val activity: FragmentActivity) {
+  private val pickFileLauncher: ActivityResultLauncher<Intent>
+  private var listener: FilePickerListener? = null
 
-  override fun createIntent(context: Context, input: String): Intent {
-    return Intent(Intent.ACTION_GET_CONTENT).apply {
-      addCategory(Intent.CATEGORY_OPENABLE)
-      type = input
-      putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-      putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-        .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+  init {
+    pickFileLauncher = activity.registerForActivityResult(
+      ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+      if (result.resultCode == Activity.RESULT_OK) {
+        if (result.data != null) {
+          val uri = result.data!!.data
+          if (listener != null) {
+            listener?.onFilePicked(
+              uri, fileFromContentUri(
+                activity, uri!!
+              )
+            )
+          }
+        }
+      } else {
+        if (listener != null) {
+          listener?.onFilePickFailed()
+        }
+      }
     }
   }
 
-  override fun getSynchronousResult(
-    context: Context, input: String
-  ): SynchronousResult<List<String>>? = null
-
-  override fun parseResult(resultCode: Int, intent: Intent?): List<String> {
-    return intent.takeIf {
-      resultCode == Activity.RESULT_OK
-    }?.getClipDataUris(context) ?: emptyList()
+  fun setFilePickerListener(listener: FilePickerListener?) {
+    this.listener = listener
   }
 
-  internal companion object {
-    internal fun Intent.getClipDataUris(context: Context): List<String> {
-      val resultSet = LinkedHashSet<String>()
-      data?.let { data ->
-        resultSet.add(data.toString())
-      }
-      val clipData = clipData
-      if (clipData == null && resultSet.isEmpty()) {
-        return emptyList()
-      } else if (clipData != null) {
-        for (i in 0 until clipData.itemCount) {
-          val uri = clipData.getItemAt(i).uri
-          if (uri != null) {
-            val filePath = uriToFile(uri, context)?.path ?: continue
-            resultSet.add(filePath)
-          }
+  fun pickFile() {
+    val intent = Intent(Intent.ACTION_GET_CONTENT)
+    intent.type = "*/*"
+    intent.addCategory(Intent.CATEGORY_OPENABLE)
+    pickFileLauncher.launch(Intent.createChooser(intent, "Select File"))
+  }
+
+  interface FilePickerListener {
+    fun onFilePicked(uri: Uri?, filePath: String?)
+    fun onFilePickFailed()
+  }
+
+  companion object {
+    private fun fileFromContentUri(context: FragmentActivity, contentUri: Uri): String {
+
+      val fileExtension = getFileExtension(context, contentUri)
+      val fileName = "temporary_file${System.currentTimeMillis()}" + if (fileExtension != null) ".$fileExtension" else ""
+
+      val tempFile = File(context.cacheDir, fileName)
+      tempFile.createNewFile()
+
+      try {
+        val oStream = FileOutputStream(tempFile)
+        val inputStream = context.contentResolver.openInputStream(contentUri)
+
+        inputStream?.let {
+          copy(inputStream, oStream)
         }
+
+        oStream.flush()
+      } catch (e: Exception) {
+        e.printStackTrace()
       }
-      return ArrayList(resultSet)
+
+      return tempFile.absolutePath
     }
 
-    private fun uriToFile(uri: Uri, context: Context): File? {
-      var resultFile: File? = null
-      if (ContentResolver.SCHEME_CONTENT == uri.scheme) {
-        val cr: ContentResolver = context.contentResolver
-        val mimeTypeMap = MimeTypeMap.getSingleton()
-        val extensionFile = mimeTypeMap.getExtensionFromMimeType(cr.getType(uri))
-        val file = File.createTempFile(
-          "temp${System.currentTimeMillis()}", ".$extensionFile", context.cacheDir
-        )
-        val input = cr.openInputStream(uri)
-        val output = FileOutputStream(file)
-        input?.use { input ->
-          output.use { output ->
-            input.copyTo(output)
-          }
-        }
-        input?.close()
-        resultFile = file
+    private fun getFileExtension(context: Context, uri: Uri): String? {
+      val fileType: String? = context.contentResolver.getType(uri)
+      return MimeTypeMap.getSingleton().getExtensionFromMimeType(fileType)
+    }
+
+    @Throws(IOException::class)
+    private fun copy(source: InputStream, target: OutputStream) {
+      val buf = ByteArray(8192)
+      var length: Int
+      while (source.read(buf).also { length = it } > 0) {
+        target.write(buf, 0, length)
       }
-      return resultFile
     }
   }
 }

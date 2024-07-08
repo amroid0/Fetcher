@@ -11,4 +11,7 @@
   <string name="hint_key">Key</string>
   <string name="hint_value">Value</string>
   <string name="label_file">File </string>
+  <string name="response_status">Response Status</string>
+  <string name="request_type">Request Type</string>
+  <string name="time">Time</string>
 </resources>

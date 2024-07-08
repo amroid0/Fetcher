@@ -1,29 +1,34 @@
 package com.amroid.fetcher.presentation.home
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.amroid.fetcher.R
 import com.amroid.fetcher.databinding.FragmentHomeBinding
 import com.amroid.fetcher.domain.entities.Request
 import com.amroid.fetcher.domain.entities.RequestType
+import com.amroid.fetcher.presentation.SharedViewModel
 import com.amroid.fetcher.utils.FilePicker
 
-class HomeFragment : Fragment() {
-  private lateinit var filePickerLauncher: ActivityResultLauncher<String>
+class HomeFragment : Fragment(), FilePicker.FilePickerListener {
+  private lateinit var filePicker: FilePicker
   private var _binding: FragmentHomeBinding? = null
   private val headerAdapter: ParamAdapter by lazy {
     ParamAdapter()
   }
   private val requestParamAdapter: ParamAdapter by lazy {
     ParamAdapter(onChooseFile = {
-      filePickerLauncher.launch("*/*")
+     filePicker.pickFile()
 
     })
+  }
+  private val sharedViewModel by lazy {
+    ViewModelProvider(requireActivity())[SharedViewModel::class.java]
   }
   private val viewModel by lazy {
     ViewModelProvider(this, HomeViewModel.Factory)[HomeViewModel::class.java]
@@ -33,11 +38,8 @@ class HomeFragment : Fragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    filePickerLauncher = registerForActivityResult(FilePicker(requireContext())) { uris ->
-      if (uris.isNotEmpty()) {
-        requestParamAdapter.addFileValue(uris[0])
-      }
-    }
+    filePicker =  FilePicker(requireActivity())
+    filePicker.setFilePickerListener(this)
   }
 
   override fun onCreateView(
@@ -56,6 +58,22 @@ class HomeFragment : Fragment() {
   }
 
   private fun setupLisenters() {
+    viewModel.getHomeState().observe(viewLifecycleOwner) {
+      when(it){
+        HomeState.Loading -> {
+          Toast.makeText(context, "loading", Toast.LENGTH_SHORT).show()
+
+        }
+        is HomeState.OnError -> {
+          Toast.makeText(context, "failed", Toast.LENGTH_SHORT).show()
+
+        }
+        is HomeState.Success -> {
+          Toast.makeText(context, "sucessss", Toast.LENGTH_SHORT).show()
+          sharedViewModel.naviagteToDetail(it.response)
+        }
+    }
+    }
     binding.methodRadioGroup.setOnCheckedChangeListener { _, id ->
       requestParamAdapter.clearParams()
       when (id) {
@@ -112,7 +130,7 @@ class HomeFragment : Fragment() {
 
 
       val request = Request(
-        url = binding.urlEdit.toString(),
+        url = binding.urlEdit.text.toString(),
         requestType = if (binding.getRadio.isChecked) RequestType.GET else RequestType.POST,
         headers = if (binding.getRadio.isChecked) headerAdapter.getParamList() else emptyList(),
         rawBody = if (binding.rawBodyRadio.isChecked) binding.rawBodyEdit.toString() else "",
@@ -139,5 +157,13 @@ class HomeFragment : Fragment() {
   override fun onDestroyView() {
     super.onDestroyView()
     _binding = null
+  }
+
+  override fun onFilePicked(uri: Uri?, filePath: String?) {
+    if (filePath != null)
+      requestParamAdapter.addFileValue(filePath)
+  }
+
+  override fun onFilePickFailed() {
   }
 }

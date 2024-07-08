@@ -4,6 +4,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Patterns
 import android.widget.EditText
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 fun EditText.watchText(afterChanged: (text: String?) -> Unit) {
   addTextChangedListener(object : TextWatcher {

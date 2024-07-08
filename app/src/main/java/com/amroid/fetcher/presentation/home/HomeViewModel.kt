@@ -12,11 +12,12 @@ import com.amroid.fetcher.domain.entities.Request
 import com.amroid.fetcher.domain.exceptions.InvalidUrlException
 import com.amroid.fetcher.domain.exceptions.NoInternetException
 import com.amroid.fetcher.domain.usecases.SendRequestUseCase
+import com.amroid.fetcher.utils.SingleLiveEvent
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class HomeViewModel(val sendRequestUseCase: SendRequestUseCase) : ViewModel() {
-  private val _homeSateLiveData = MutableLiveData<HomeState>()
+  private val _homeSateLiveData = SingleLiveEvent<HomeState>()
   private var task: ExecutorService = Executors.newSingleThreadExecutor()
 
   public fun getHomeState(): LiveData<HomeState> {
