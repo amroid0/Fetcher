@@ -18,3 +18,6 @@ This is a simple Android application designed for testing backend APIs. It allow
 - **HttpURLConnection:** Handling networking operations.
 - **SQLite:** Caching requests locally.
 - **ExecutorService:** Managing threading and background tasks.
+
+## APK Download
+[APK Link](https://drive.google.com/file/d/1ElBdRuBi5T61fZwDITGptqTD0XZjttIm/view?usp=drive_link)
