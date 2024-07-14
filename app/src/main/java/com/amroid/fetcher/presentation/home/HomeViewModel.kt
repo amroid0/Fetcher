@@ -19,8 +19,10 @@ import java.util.concurrent.Executors
 class HomeViewModel(val sendRequestUseCase: SendRequestUseCase) : ViewModel() {
   private val _homeSateLiveData = SingleLiveEvent<HomeState>()
   private var task: ExecutorService = Executors.newSingleThreadExecutor()
+ val map = mutableMapOf<String,String>()
 
   public fun getHomeState(): LiveData<HomeState> {
+    map.size
     return _homeSateLiveData
   }
 
@@ -42,6 +44,11 @@ class HomeViewModel(val sendRequestUseCase: SendRequestUseCase) : ViewModel() {
     }
 
 
+  }
+
+  override fun onCleared() {
+    super.onCleared()
+    task.shutdownNow()
   }
 
 
